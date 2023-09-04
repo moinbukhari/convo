@@ -1,7 +1,10 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
+import { set } from "zod";
+import { Button } from "~/components/ui/button";
 import { api } from "~/utils/api";
+import { ChatClient } from "~/components/ChatClient";
 
 const languages = [
   { name: "spanish", flag: "ES", available: true },
@@ -25,6 +28,12 @@ export default function Home() {
   const [selectedScenario, setSelectedScenario] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [hasConversationStarted, setHasConversationStarted] = useState(false);
+
+  const handleEndConversation = () => {
+    setSelectedLanguage("");
+    setSelectedScenario("");
+    setHasConversationStarted(false);
+  };
 
   return (
     <>
@@ -78,9 +87,9 @@ export default function Home() {
             </div>
 
             {selectedLanguage && selectedScenario && (
-              <button onClick={() => setHasConversationStarted(true)}>
+              <Button onClick={() => setHasConversationStarted(true)}>
                 Begin Conversation
-              </button>
+              </Button>
             )}
           </>
         )}
@@ -88,16 +97,12 @@ export default function Home() {
         {hasConversationStarted && (
           <div className="flex flex-col items-center justify-center">
             <h1>Conversation</h1>
-            <div className="flex flex-col items-center justify-center">
-              <div className="flex flex-col items-center justify-center">
-                <p>👩: Hello, how are you?</p>
-                <p>👨: I am good, how are you?</p>
-                <p>👩: I am good, thanks for asking.</p>
-                <p>👨: No problem.</p>
-              </div>
-            </div>
 
-            <button onClick={() => setHasConversationStarted(false)}>Start a new conversation</button>
+
+
+            <ChatClient language={selectedLanguage} scenario={selectedScenario} /> 
+
+            <Button onClick={handleEndConversation}>Start a new conversation</Button>
           </div>
         )}
       </main>
